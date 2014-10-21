@@ -18,7 +18,7 @@ class NotifyServer:
 		return s
 	
 	def run(self, frequency):
-		
+				
 	
 	def getUnreadCount(self):
 		return	self.skype.MissedMessages.Count +
@@ -26,8 +26,9 @@ class NotifyServer:
 			self.skype.MissedChats.Count +
 			self.skype.MissedVoicemails.Count	
 
-
-
+	def getOnlineList(self):
+		return [ user.FullName for user in self.skype.Friends
+				if user.OnlineStatus != Skype4Py.cusOffline]	
 
 skype = Skype4Py.Skype()
 skype.Attach()
