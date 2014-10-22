@@ -56,6 +56,10 @@ class NotifyServer:
 		if mininterval('online'):
 			self.online_cache = self.getOnlineList()
 		socket.send(str(self.online_cache) + "\n")
+	
+	def clearUnread(self):
+		for msg in self.skype.MissedMessages:
+			msg._SetSeen(True)
 
 	def getUnreadCount(self):
 		return	self.skype.MissedMessages.Count
