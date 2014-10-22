@@ -23,13 +23,13 @@ class NotifyServer:
 		self.times	  = {'online':curtime(),'unread':curtime()}
 
 	def initSocket(self):
-		s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+		s = socket.socket(socket.AF_INET, socket.SOCK_STREAM, socket.SO_REUSEADDR)
 		s.bind(('',self.port))
 		return s
 
 	def mininterval(self, field):
 		ntime = curtime()
-		if ntime - self.times[field] > mintime:
+		if ntime - self.times[field] > self.mintime:
 			self.times[field] = ntime
 			return True
 		return False
