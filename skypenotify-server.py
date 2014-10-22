@@ -7,7 +7,7 @@ import time
 def log(msg):
 	print >> sys.stderr, str(msg)
 def curtime():
-	int(round(time.time() * 1000))
+	return int(round(time.time() * 1000))
 
 class NotifyServer:
 
@@ -38,7 +38,7 @@ class NotifyServer:
 		self.socket.listen(5)
 		while 1:
 			connection,addr = self.socket.accept()
-			lines = str(connection).split('\n')
+			lines = str(connection.recv(128)).split('\n')
 			print lines
 			for text in lines:
 				if text == 'unread':
