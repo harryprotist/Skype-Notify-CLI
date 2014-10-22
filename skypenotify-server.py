@@ -24,7 +24,7 @@ class NotifyServer:
 
 	def initSocket(self):
 		s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-		s.bind(self.port)
+		s.bind(('',self.port))
 		return s
 
 	def mininterval(self, field):
@@ -34,7 +34,7 @@ class NotifyServer:
 			return True
 		return False
 	
-	def run(self, frequency):
+	def run(self):
 		self.socket.listen(5)
 		while 1:
 			connection,addr = self.socket.accept()
@@ -72,4 +72,4 @@ class NotifyServer:
 skype = Skype4Py.Skype()
 skype.Attach()
 
-print str(NotifyServer(skype, 9992).getOnlineList())
+NotifyServer(skype, 9992).run()
