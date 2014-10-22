@@ -44,8 +44,11 @@ class NotifyServer:
 					self.sendUnread()
 				elif text == 'online':
 					self.sendOnline()
-				if text == 'clear':
+				elif text == 'clear':
 					self.clearUnread()
+				elif text == 'close':
+					self.socket.close()
+					sys.exit(0)
 					
 	def sendUnread(self):
 		if self.mininterval('unread'):
