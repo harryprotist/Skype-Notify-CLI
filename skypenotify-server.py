@@ -20,12 +20,19 @@ class NotifyServer:
 		self.online_cache = self.getOnlineList()
 		self.unread_cache = self.getUnreadCount()
 		self.mintime      = mintime
-		self.time	  = 
+		self.time	  = curtime()
 
 	def initSocket(self):
 		s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 		s.bind(self.port)
 		return s
+
+	def mininterval(self):
+		ntime = curtime()
+		if ntime - self.time > mintime:
+			self.time = ntime
+			return True
+		return False
 	
 	def run(self, frequency):
 		self.socket.listen(5)
@@ -40,7 +47,11 @@ class NotifyServer:
 				if text == 'clear':
 					self.clearUnread()
 					
-	
+	def sendUnread(self):
+		if mininterval():
+			self.unread_cache = self.getUnreadCount()
+		return self.unread_cache
+
 	def getUnreadCount(self):
 		return	self.skype.MissedMessages.Count
 
