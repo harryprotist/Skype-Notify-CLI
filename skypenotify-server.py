@@ -39,6 +39,7 @@ class NotifyServer:
 		while 1:
 			connection,addr = self.socket.accept()
 			lines = str(connection).split('\n')
+			print lines
 			for text in lines:
 				if text == 'unread':
 					self.sendUnread()
@@ -58,7 +59,7 @@ class NotifyServer:
 	def sendOnline(self):
 		if mininterval('online'):
 			self.online_cache = self.getOnlineList()
-		socket.send(str(self.online_cache) + "\n")
+		socket.send('\x1F'.join(self.online_cache) + "\n")
 	
 	def clearUnread(self):
 		for msg in self.skype.MissedMessages:
