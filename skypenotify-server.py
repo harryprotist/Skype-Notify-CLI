@@ -66,7 +66,8 @@ class NotifyServer:
 	
 	def sendOnline(self, connection):
 		#if self.mininterval('online'):
-		self.online_cache = self.getOnlineList()
+		# helps with unreliable performance of online list
+		self.online_cache = self.getOnlineList() or self.online_cache
 		connection.sendall('\x1F'.join(self.online_cache) + "\n")
 	
 	def clearUnread(self):
@@ -84,4 +85,6 @@ class NotifyServer:
 skype = Skype4Py.Skype()
 skype.Attach()
 
-NotifyServer(skype, 9992).run()
+port = (len(sys.argv) >= 2) and int(sys.argv[1]) or 9992
+
+NotifyServer(skype, port).run()
