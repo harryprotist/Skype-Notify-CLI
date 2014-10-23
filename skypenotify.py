@@ -3,15 +3,15 @@ import socket
 import sys
 
 def getUnreadCount(sock):
-	sock.sendall('unread\n')
-	return str(sock.recv(32)).strip()
+	sock.sendall('u\n')
+	return str(sock.recvfrom(4096)).strip()
 
 def getOnlineList(sock):
-	sock.sendall('online\n')
-	return '\n'.join(str(sock.recv(4096)).split("\x1F"))
+	sock.sendall('o\n')
+	return '\n'.join(str(sock.recvfrom(4096)).split("\x1F"))
 
 def closeServer(sock):
-	sock.sendall('close\n')
+	sock.sendall('x\n')
 	return 'closed server'
 
 sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
@@ -21,4 +21,5 @@ print {
 	'--unread':getUnreadCount,
 	'--online':getOnlineList,
 	'--close':closeServer,
-}[sys.argv(1)](sock)
+}[sys.argv[1]](sock)
+sock.close()
