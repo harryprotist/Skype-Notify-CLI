@@ -19,6 +19,7 @@ class NotifyServer:
 
 		self.online_cache = self.getOnlineList()
 		self.unread_cache = self.getUnreadCount()
+
 		self.mintime      = mintime
 		self.times	  = {'online':curtime(),'unread':curtime()}
 
@@ -64,8 +65,8 @@ class NotifyServer:
 		connection.sendall(str(self.unread_cache) + "\n")
 	
 	def sendOnline(self, connection):
-		if self.mininterval('online'):
-			self.online_cache = self.getOnlineList()
+		#if self.mininterval('online'):
+		self.online_cache = self.getOnlineList()
 		connection.sendall('\x1F'.join(self.online_cache) + "\n")
 	
 	def clearUnread(self):
