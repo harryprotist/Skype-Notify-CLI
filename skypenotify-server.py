@@ -11,7 +11,7 @@ def curtime():
 
 class NotifyServer:
 
-	def __init__(self, client, port, mintime = 1000):
+	def __init__(self, client, port, mintime = 5000):
 		self.skype = client
 		self.port  = port	
 
@@ -26,6 +26,7 @@ class NotifyServer:
 		s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 		s.setsockopt(socket.SOL_SOCKET,socket.SO_REUSEADDR,1)
 		s.bind(('',self.port))
+		log('socket initialized')
 		return s
 
 	def mininterval(self, field):
@@ -48,12 +49,13 @@ class NotifyServer:
 				self.clearUnread()
 			elif text == 'x':
 				self.socket.close()
+				log('closing server')
 				sys.exit(0)
 			connection.close()
 
 	def recvall(self, connection):
 		data = connection.recv(1024)
-		print data
+		log(data.strip())
 		return data
 
 	def sendUnread(self, connection):
