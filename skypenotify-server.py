@@ -23,7 +23,8 @@ class NotifyServer:
 		self.times	  = {'online':curtime(),'unread':curtime()}
 
 	def initSocket(self):
-		s = socket.socket(socket.AF_INET, socket.SOCK_STREAM, socket.SO_REUSEADDR)
+		s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+		s.setsockopt(socket.SOL_SOCKET,socket.SO_REUSEADDR,1)
 		s.bind(('',self.port))
 		return s
 
@@ -38,28 +39,32 @@ class NotifyServer:
 		self.socket.listen(5)
 		while 1:
 			connection,addr = self.socket.accept()
-			lines = str(connection.recv(128)).split('\n')
-			print lines
-			for text in lines:
-				if text == 'unread':
-					self.sendUnread()
-				elif text == 'online':
-					self.sendOnline()
-				elif text == 'clear':
-					self.clearUnread()
-				elif text == 'close':
-					self.socket.close()
-					sys.exit(0)
-					
-	def sendUnread(self):
+			text = str(self.recvall(connection)).strip()
+			if text == 'u':
+				self.sendUnread(connection)
+			elif text == 'o':
+				self.sendOnline(connection)
+			elif text == 'c':
+				self.clearUnread()
+			elif text == 'x':
+				self.socket.close()
+				sys.exit(0)
+			connection.close()
+
+	def recvall(self, connection):
+		data = connection.recv(1024)
+		print data
+		return data
+
+	def sendUnread(self, connection):
 		if self.mininterval('unread'):
 			self.unread_cache = self.getUnreadCount()
-		socket.send(str(self.unread_cache) + "\n")
+		connection.sendall(str(self.unread_cache) + "\n")
 	
-	def sendOnline(self):
-		if mininterval('online'):
+	def sendOnline(self, connection):
+		if self.mininterval('online'):
 			self.online_cache = self.getOnlineList()
-		socket.send('\x1F'.join(self.online_cache) + "\n")
+		connection.sendall('\x1F'.join(self.online_cache) + "\n")
 	
 	def clearUnread(self):
 		for msg in self.skype.MissedMessages:
