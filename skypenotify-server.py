@@ -87,4 +87,10 @@ skype.Attach()
 
 port = (len(sys.argv) >= 2) and int(sys.argv[1]) or 9992
 
-NotifyServer(skype, port).run()
+# keep trying until the thing works
+while True:
+	try:
+		NotifyServer(skype, port).run()
+	except:
+		pass
+	time.sleep(10)
